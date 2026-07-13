@@ -31,7 +31,7 @@ def get_gemini_recommendations(query):
         f"is likely to enjoy. Only return the movie names, each on a new line, without "
         f"extra symbols, numbers, or explanations."
     )
-    model = genai.GenerativeModel("gemini-1.5-flash")
+    model = genai.GenerativeModel("gemini-2.5-flash")
     response = model.generate_content(prompt)
     movies_list = [m.strip(" -*") for m in response.text.split("\n") if m.strip()]
     return movies_list
