@@ -4,8 +4,7 @@ from sklearn.feature_extraction.text import TfidfVectorizer
 from sklearn.metrics.pairwise import linear_kernel
 import google.generativeai as genai
 
-GEMINI_API_KEY = "AIzaSyAtVD0b4ULneDRdeqo9X8WvIa-izsMquxA"
-genai.configure(api_key=GEMINI_API_KEY)
+genai.configure(api_key=st.secrets["GOOGLE_API_KEY"])
 
 @st.cache_data
 def load_data():
