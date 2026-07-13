@@ -31,7 +31,7 @@ def get_gemini_recommendations(query):
         f"extra symbols, numbers, or explanations."
     )
     try:
-        model = genai.GenerativeModel("gemini-2.5-flash")
+        model = genai.GenerativeModel("gemini-2.5-flash-lite")
         response = model.generate_content(prompt)
         movies_list = [m.strip(" -*") for m in response.text.split("\n") if m.strip()]
         return movies_list
