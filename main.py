@@ -2,7 +2,7 @@ import streamlit as st
 import pandas as pd
 from sklearn.feature_extraction.text import TfidfVectorizer
 from sklearn.metrics.pairwise import linear_kernel
-import google.generativeai as genai
+from google import genai
 
 client = genai.Client(api_key=st.secrets["GOOGLE_API_KEY"])
 
