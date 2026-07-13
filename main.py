@@ -4,7 +4,7 @@ from sklearn.feature_extraction.text import TfidfVectorizer
 from sklearn.metrics.pairwise import linear_kernel
 import google.generativeai as genai
 
-genai.configure(api_key=st.secrets["GOOGLE_API_KEY"])
+client = genai.Client(api_key=st.secrets["GOOGLE_API_KEY"])
 
 @st.cache_data
 def load_data():
@@ -24,22 +24,30 @@ def create_similarity_matrix(data):
 cosine_sim = create_similarity_matrix(movies)
 
 def get_gemini_recommendations(query):
-    prompt = (
-        f"You are a movie expert. Recommend 5 movies similar in theme, vibe, or genre "
-        f"to the movie '{query}'. Focus on popular and highly-rated titles that the user "
-        f"is likely to enjoy. Only return the movie names, each on a new line, without "
-        f"extra symbols, numbers, or explanations."
-    )
+    prompt = f"""
+Recommend 5 movies similar to "{query}".
+
+Return ONLY the movie names.
+One movie per line.
+No numbering.
+No explanation.
+"""
+
     try:
-        model = genai.GenerativeModel("gemini-2.5-flash-lite")
-        response = model.generate_content(prompt)
-        movies_list = [m.strip(" -*") for m in response.text.split("\n") if m.strip()]
-        return movies_list
+        response = client.models.generate_content(
+            model="gemini-2.5-flash",
+            contents=prompt,
+        )
+
+        return [
+            x.strip()
+            for x in response.text.splitlines()
+            if x.strip()
+        ]
 
     except Exception as e:
-        st.exception(e)      # shows the complete Google error
+        st.error(e)
         return []
-
 def get_recommendations(title, cosine_sim=cosine_sim):
     indices = pd.Series(movies.index, index=movies['title']).drop_duplicates()
     if title not in indices:
